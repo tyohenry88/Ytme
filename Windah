@@ -1,0 +1,27 @@
+import feedparser
+import requests
+import time
+
+# URL RSS Feed YouTube (Ganti dengan channel yang diinginkan)
+YOUTUBE_RSS = "https://youtube.com/@windahbasudara?si=u1ZIXmPLtm67jYZH"
+
+# Webhook Discord
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1345931945984397404/prYtaHyHPW_ZNNOYsrwFYsoJxm5LimcCqh-UtzXWPmoNL3KYhR-xObyNQmrVZyl0gt0j"
+
+last_video = None
+
+while True:
+    feed = feedparser.parse(YOUTUBE_RSS)
+    latest_entry = feed.entries[0]
+    
+    video_url = latest_entry.link
+    video_title = latest_entry.title
+    
+    if video_url != last_video:
+        message = {
+            "content": f"🎥 Video baru: {video_title}\n🔗 {video_url}"
+        }
+        requests.post(DISCORD_WEBHOOK_URL, json=message)
+        last_video = video_url
+
+    time.sleep(600)  # Cek setiap 10 menit
